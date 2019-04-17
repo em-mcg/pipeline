@@ -4,7 +4,11 @@
     "name": "cmd",
     "stage": "cmd",
     "config": {
-      "cmd": "sleep 5"
+      "cmd": "echo HELLO WORLD! > ##TMPDIR##/hello",
+      "resources": [ {
+        "name": "lock_1",
+        "max_allocation": 1
+      }]
     }
   }
   ],
@@ -17,7 +21,7 @@
     },
     {
       "src": "cmd:chunked_link",
-      "dst": "output_0:chunked_link"
+      "dst": "output_0:chunks"
     }
     ]
 }

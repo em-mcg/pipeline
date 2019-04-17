@@ -2,7 +2,7 @@ import logging
 
 
 def print_task_states(tasks):
-    out_msg = '\n' + str(len(tasks))+' tasks running:\n'
+    out_msg = "\n{} task(s) running\n".format(len(tasks))
     statecount = {}
     for t in tasks:
         s = str(t)

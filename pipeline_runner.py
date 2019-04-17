@@ -41,7 +41,8 @@ def invoke_pipeline(args):
     if response.success:
         return response.mpd_url
     else:
-        raise Exception(response.error_msg)
+        pass
+        #raise Exception(response.error_msg)
 
 
 if __name__ == '__main__':
@@ -52,8 +53,11 @@ if __name__ == '__main__':
                         default=open("pipeline_conf.json", 'r'))
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.DEBUG,
-                        format="%(levelname)s - %(asctime)s - %(filename)s:%(lineno)d - %(message)s")
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s (%(threadName)s) %(filename)s:%(lineno)d: %(message)s',
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
     logging.debug("arguments: %s", args)
     logging.debug("config: %s", settings)

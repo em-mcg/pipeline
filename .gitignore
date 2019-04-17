@@ -70,3 +70,5 @@ Makefile.in
 archive/
 eval/
 logs/
+
+.vscode
