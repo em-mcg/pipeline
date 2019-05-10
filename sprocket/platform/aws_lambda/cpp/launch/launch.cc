@@ -45,11 +45,11 @@ void launchpar(int nlaunch, string fn_name, string akid, string secret, string p
             request[j].emplace_back(move(ll.to_http_request()));
         }
     }
-//    cerr << "done.\n";
+    cerr << "done.\n";
 
     // open connections to server
     vector<vector<SecureSocket>> www;
-//    cerr << "Opening sockets...";
+    cerr << "Opening sockets..." << endl;
     {
         vector<vector<bool>> sfins;
         vector<string> servername;

@@ -9,6 +9,8 @@ from multiprocessing import TimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Lock
 from time import sleep, time
+import random
+import string
 
 import boto3
 
@@ -120,6 +122,7 @@ def _background(runner, vals, queuemsg):
         donemsg = "FAIL: %s" % traceback.format_exc()
         retval = 1
 
+    print donemsg
     if sock is None:
         if vals.get('cmdsock') is not None:
             vals['cmdsock'].enqueue(donemsg)
@@ -127,8 +130,6 @@ def _background(runner, vals, queuemsg):
 
         else:
             # for mode 0 where we don't connect to a command server
-
-            print donemsg
             return donemsg
 
     else:
@@ -211,6 +212,7 @@ def do_quit(_, vals):
 #  run the command
 ###
 def do_run(msg, vals):
+    print "handler.do_run"
     cmdstring = Defs.make_cmdstring(msg, vals)
 
     def ret_helper():
@@ -221,7 +223,40 @@ def do_run(msg, vals):
             p.wait()
             retval = p.returncode
             donemsg = 'OK:RETVAL(%d):OUTPUT(%s):COMMAND(%s)' % (retval, p.stdout.read().strip(), cmdstring)
+            print donemsg
         except Exception as e:
+            donemsg = 'FAIL:RUN %s' % str(e)
+            retval = 1
+
+        return (donemsg, retval)
+
+    return _background(ret_helper, vals, 'OK:RUNNING(%s)' % cmdstring)
+
+###
+#  run a python command
+###
+def do_python_run(msg, vals):
+    print "handler.do_python_run"
+    cmdstring = Defs.make_cmdstring(msg, vals)
+
+    def ret_helper():
+        retval = 0
+        try:
+            message = msg.strip(":")
+            # TODO: fix msg format
+            aws_request_id = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(10)])
+            module_name, funct_name, event = message.split(":", 2)
+            module = __import__(module_name, fromlist=['object'])
+            funct = getattr(module, funct_name)
+
+            # assign random request id
+            vals['context'].aws_request_id = aws_request_id
+            funct(eval(event), vals['context'])
+
+            donemsg = 'OK:RETVAL(%d):COMMAND(%s)' % (retval, cmdstring)
+            print donemsg
+        except Exception as e:
+            traceback.print_exc()
             donemsg = 'FAIL:RUN %s' % str(e)
             retval = 1
 
@@ -568,9 +603,12 @@ message_types = { 'set:': do_set
                 , 'echo:': do_echo
                 , 'quit:': do_quit
                 , 'run:': do_run
+                , 'python_run': do_python_run
                 , 'connect:': do_connect
                 , 'close_connect:': do_close_connect
                 }
+
+
 def handle_message(msg, vals):
     if Defs.debug:
         print "CLIENT HANDLING %s" % msg
@@ -592,6 +630,7 @@ message_responses = { 'set': 'OK:SET'
                     , 'upload': 'OK:UPLOAD'
                     , 'echo': 'OK:ECHO'
                     , 'run': 'OK:R'
+                    , 'python_run': 'OK:R'
                     , 'listen': 'OK:LISTEN'
                     , 'close_listen': 'OK:CLOSE_LISTEN'
                     , 'connect': 'OK:CONNECT'

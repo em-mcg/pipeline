@@ -1,0 +1,37 @@
+{
+  "nodes":[
+  {
+    "name": "python_cmd",
+    "stage": "python_cmd",
+    "config": {
+      "module": "UpdateAlarmTable",
+      "function": "lambda_handler",
+      "event": {
+        "alarm_name": "alarm_0",
+        "data": 21,
+        "test_id": "6TD0K1QB-0",
+        "event_id": 0
+      },
+      "resources": [
+          {
+            "name": "lock_1",
+            "required_allocation": 1,
+            "max_allocation": 1
+          }
+      ]
+    }
+  }
+  ],
+
+  "streams":
+    [
+    {
+      "src": "input_0:chunked_link",
+      "dst": "python_cmd:chunked_link"
+    },
+    {
+      "src": "python_cmd:chunked_link",
+      "dst": "output_0:chunks"
+    }
+    ]
+}

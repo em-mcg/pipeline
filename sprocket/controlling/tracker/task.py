@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from sprocket.stages import FinalStateTemplate
+import logging
 
 
 class Task(object):
@@ -12,6 +13,8 @@ class Task(object):
 
         self.current_state = None
         self.rwflag = 0
+        self.config = kwargs.get('config', {})
+        self.resources = self.config.get('resources', {})
 
     def __str__(self):
         return "task created" if self.current_state is None else self.current_state.__module__.split('.')[-1] + \

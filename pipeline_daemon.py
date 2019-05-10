@@ -29,7 +29,7 @@ def turn_on_debug():
         ptvsd.wait_for_attach()
         #time.sleep(5)
         print "Received attach"
-turn_on_debug()
+# turn_on_debug()
 
 
 def start_daemon():

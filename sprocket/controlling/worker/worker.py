@@ -190,7 +190,8 @@ make_retrievestring = lambda m, v: make_urstring(m, v, 'inkey', 'targfile')
 ###
 #  worker enters here
 ###
-def worker_handler(event, _):
+def worker_handler(event, context):
+    print "Worker start"
     lambda_start_ts = time.time() if not 'start_ts' in event else event['start_ts']
 
     Defs.cmdstring = cmdstring
@@ -233,12 +234,15 @@ def worker_handler(event, _):
            , 'run_iter': 0
            , 'hash_s3keys': hash_s3keys
            , '_tmpdir': tempfile.mkdtemp(prefix="lambda_", dir="/tmp")
+           , 'context': context
            }
     # default: just run the command and exit
     if mode == 0:
-        return handler.do_run('', {'event': event})
+        return handler.do_run('', {'event': event, 'context': context})
 
+    print "Connecting to CC at {}:{}".format(addr, port)
     s = network.connect_socket(addr, port, cacert, srvcrt, srvkey)
+    print "Connected to CC"
     s.enqueue(json.dumps({'lambda_function': event.get('lambda_function'), 'lambda_start_ts': lambda_start_ts}))  # send init msg
 
     if not isinstance(s, SocketNB):
@@ -329,5 +333,6 @@ def worker_handler(event, _):
 
     if vals.get('rm_tmpdir') and vals.get('_tmpdir') is not None:
         shutil.rmtree(vals.get('_tmpdir'))
+
 
 cmdstring = ''

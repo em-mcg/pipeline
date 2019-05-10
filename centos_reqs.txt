@@ -1,0 +1,14 @@
+sudo yum -y install python-pip
+sudo pip install --upgrade pip
+
+sudo pip install -r requirements-dev.txt
+sudo yum install autoconf libtool
+sudo yum groupinstall 'Development Tools'
+sudo yum install openssl-devel
+
+sudo pip install grpcio
+sudo pip install grpcio-tools
+sudo pip install boto3 boto
+sudo pip install pyOpenSSL
+
+# add <functional> header

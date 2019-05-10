@@ -87,33 +87,16 @@ class PipelineServer(pipeline_pb2_grpc.PipelineServicer):
             while not result_queue.empty():
                 chunk = result_queue.get(block=False)['chunks']  # TODO: should named chunks or m4schunks
                 num_m4s += 1
-                duration += chunk['duration']
-                if int(chunk['metadata']['lineage']) == 1:
-                    out_key = chunk['key']
+                # duration += chunk['duration']
+                #if int(chunk['metadata']['lineage']) == 1:
+                #    out_key = chunk['key']
 
             logging.info("number of m4s chunks: %d", num_m4s)
             logging.info("total duration: %f", duration)
-            if out_key is not None:
-                os.system('aws s3 cp ' + out_key + '00000001_dash.mpd ' + pipe_dir + '/')
-                logging.info('mpd downloaded')
-                with open(pipe_dir + '/00000001_dash.mpd', 'r') as fin:
-                    init_mpd = fin.read()
 
-                final_mpd = amend_mpd(init_mpd, duration, out_key, num_m4s)
+            return pipeline_pb2.SubmitReply(success=True, mpd_url=None)
 
-                logging.info('mpd amended')
-                with open(pipe_dir + '/output.xml', 'wb') as fout:
-                    fout.write(final_mpd)
-
-                os.system('aws s3 cp ' + pipe_dir + '/output.xml ' + out_key)
-                logging.info('mpd uploaded')
-                signed_mpd = get_signed_URI(out_key + 'output.xml')
-                logging.info('mpd signed, returning')
-
-                return pipeline_pb2.SubmitReply(success=True, mpd_url=signed_mpd)
-
-            else:
-                return pipeline_pb2.SubmitReply(success=False, error_msg='no output is found')
+            # return pipeline_pb2.SubmitReply(success=False, error_msg='no output is found')
 
         except Exception as e:
             logging.error(traceback.format_exc())

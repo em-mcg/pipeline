@@ -1,0 +1,28 @@
+{
+    "daemon_addr": "ec2-52-53-155-252.us-west-1.compute.amazonaws.com"
+  , "daemon_port": 24680
+
+  , "scheduler": "SimpleScheduler"
+  , "_simp_scheduler": "SimpleScheduler"
+  , "_con_scheduler": "ConcurrencyLimitPriorityScheduler"
+  , "concurrency_limit": 200
+
+  , "default_region": "us-east-1"
+  , "storage_base": "s3://lixiang-pipeline/"
+  , "hash_bucket": true
+  , "temp_storage_base": "s3://pipetemp-"
+  , "s3_threadpool_size": 4
+  , "straggler_configs": "0.9 2 0.7"
+  , "use_tar": false
+
+  , "platform": "aws_lambda"
+  , "default_lambda_function": "aolx_sample_app"
+
+  , "aws_access_key_id_file": "./aws_access_key_id_lx"
+  , "aws_secret_access_key_file": "./aws_secret_access_key_lx"
+  , "srvcrt_file": "./ssl/server_cert.pem"
+  , "srvkey_file": "./ssl/server_key.pem"
+
+  , "tracker_port": 13579
+  , "tracker_backlog": 3000
+}

@@ -58,9 +58,3 @@ class RunState(CommandListState):
 class InitState(InitStateTemplate):
     extra = "(init state)"
     nextState = RunState
-
-    def __init__(self, prevState):
-        super(InitStateTemplate, self).__init__(prevState)
-        logging.debug(self.config)
-
-

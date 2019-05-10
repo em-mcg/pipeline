@@ -30,23 +30,31 @@ class SchedulerBase(object):
                                         stale=len(tasks) == 0 and stage.deliver_queue.empty(),
                                         stage_conf=stage.config, stage_context=stage.context, pipedata=pipeline.pipedata)
 
-            if cls.submit_tasks(pipeline, tasks) != 0:
+            submitted_task_count = cls.submit_tasks(pipeline, tasks)
+            if submitted_task_count != 0:
                 deliver_empty = False
 
             if hasattr(cls, 'get_quota'):
-                if cls.get_quota(pipeline) ==0: #if pipeline is sleeping
+                if cls.get_quota(pipeline) == 0:  # if pipeline is sleeping
                     deliver_empty = False
                 elif not cls.get_deliverQueueEmpty(pipeline):
                     deliver_empty = False
 
+            deliver_empty = cls.get_deliver_queue_empty(pipeline)
+
+            finished_tasks = [t for t in tasks if
+                                isinstance(t.current_state, ErrorState) or
+                                isinstance(t.current_state, TerminalState)]
             error_tasks = [t for t in tasks if isinstance(t.current_state, ErrorState)]
+
+            cls.process_finish_tasks(finished_tasks)
             if len(error_tasks) > 0:
-                logging.error(str(len(error_tasks))+" tasks failed: ")
+                logging.error(str(len(error_tasks)) + " tasks failed: ")
                 errmsgs = []
                 for et in error_tasks:
                     logging.error(et.current_state.str_extra())
                     errmsgs.append(et.current_state.str_extra())
-                raise Exception(str(len(error_tasks))+" tasks failed\n"+"\n".join(errmsgs))
+                raise Exception(str(len(error_tasks)) + " tasks failed\n" + "\n".join(errmsgs))
             tasks = [t for t in tasks if not isinstance(t.current_state, TerminalState)]
 
             if buffer_empty and deliver_empty and len(tasks) == 0:
@@ -56,7 +64,7 @@ class SchedulerBase(object):
                 print_task_states(tasks)
                 # logging.debug("buffer empty: "+str(buffer_empty)+', deliver empty: '+str(deliver_empty))
                 last_print = time.time()
-            time.sleep(0.01)
+            time.sleep(3)
             # sleep to avoid spinning, we can use notification instead, but so far, this works.
             # it may increase overall latency by at most n*0.01 second, where n is the longest path in the pipeline
 
@@ -70,7 +78,19 @@ class SchedulerBase(object):
     def stop(cls):
         cls.should_stop = True
 
-    
+    @classmethod
+    def get_deliver_queue_empty(cls, pipeline):
+        deliver_empty = True
+        for key, stage in pipeline.stages.iteritems():
+            if not stage.deliver_queue.empty():
+                deliver_empty = False
+                return deliver_empty
+        return deliver_empty
+
+    @classmethod
+    def process_finish_tasks(cls, tasks):
+        pass
+
 
 class ThrottledScheduler(SchedulerBase):
 

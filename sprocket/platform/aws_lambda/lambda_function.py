@@ -2,5 +2,5 @@
 import sprocket.controlling.worker.worker as worker
 
 
-def lambda_handler(event, _):
-    worker.worker_handler(event, None)
+def lambda_handler(event, context):
+    worker.worker_handler(event, context)

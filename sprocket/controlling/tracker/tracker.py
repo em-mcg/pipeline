@@ -233,7 +233,7 @@ class Tracker(object):
                 task_list[0].event['addr'] = settings['daemon_addr']
                 start = time.time()
                 payload = json.dumps(task_list[0].event)
-                logging.debug("Putting {} invokation on launch_queue".format(function_name))
+                logging.debug("Putting {} invocation on launch_queue".format(function_name))
 
                 # launcher is waiting on this queue and will launch events asynchronously
                 launch_queue.put(
@@ -251,8 +251,11 @@ class Tracker(object):
                     # logger = logging.getLogger(p.kwargs['in_events'].values()[0]['metadata']['pipe_id'])
                     # logger.debug('%s, %s', p.kwargs['in_events'].values()[0]['metadata']['lineage'], 'send, request')
                     logger = lightlog.getLogger(task.kwargs['in_events'].values()[0]['metadata']['pipe_id'])
-                    logger.debug(ts=time.time(), lineage=task.kwargs['in_events'].values()[0]['metadata']['lineage'],
-                                 op='send', msg='invocation')
+                    logger.debug(ts=time.time(),
+                                 lineage=task.kwargs['in_events'].values()[0]['metadata']['lineage'],
+                                 op='send',
+                                 msg='invocation'
+                                 )
 
                 logging.debug("Invoking {} worker(s) takes {} ms".format(len(task_list), (time.time() - start) * 1000))
                 logging.debug(task_list)

@@ -4,11 +4,14 @@
     "name": "cmd",
     "stage": "cmd",
     "config": {
-      "cmd": "echo HELLO WORLD! > ##TMPDIR##/hello",
-      "resources": [ {
-        "name": "lock_1",
-        "max_allocation": 1
-      }]
+      "cmd": "sleep 5; echo HELLO WORLD!",
+      "resources": [
+          {
+            "name": "lock_1",
+            "required_allocation": 1,
+            "max_allocation": 1
+          }
+      ]
     }
   }
   ],
