@@ -19,6 +19,11 @@ class Launcher(LauncherBase):
         pylaunch.initialize_launch()
         while True:
             launch_ev = launch_queue.get()
-            pylaunch.launchpar_async(launch_ev.nlaunch, launch_ev.fn_name, launch_ev.akid, launch_ev.secret,
-                               launch_ev.payload,
-                               launch_ev.regions)
+            pylaunch.launchpar_async(
+                launch_ev.nlaunch,
+                launch_ev.fn_name,
+                launch_ev.akid,
+                launch_ev.secret,
+                launch_ev.payload,
+                launch_ev.regions
+            )

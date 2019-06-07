@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 
-from sprocket.controlling.tracker.machine_state import CommandListState, OnePassState
+from sprocket.controlling.tracker.machine_state import CommandListState, OnePassState, WaitForInputState
 from sprocket.stages import InitStateTemplate, FinalStateTemplate
 from sprocket.config import settings
 import logging
@@ -22,16 +22,39 @@ class EmitState(OnePassState):
         self.emit_event('chunked_link', {'key': settings['storage_base'] + 'TEST/'})  # just forward whatever comes in
         
 
+class WaitForNextCommand(WaitForInputState):
+    extra = "(wait for input state)"
+    nextState = FinalState
+    wait_time = 10  # seconds
+
+    commandlist = [
+        ("OK:", "wait:{}".format(str(wait_time))),
+        ("OK:", "quit:")
+    ]
+
+    def __init__(self, prevState):
+        super(WaitForNextCommand, self).__init__(prevState)
+        # Variables to substitute into the commands
+        params = {}
+
+        # Substitute parameters into commands
+        self.commands = [
+            s.format(**params)
+            if s is not None else None
+            for s in self.commands
+        ]
+
+
 class RunState(CommandListState):
     extra = "(run state)"
-    nextState = EmitState
+    nextState = WaitForNextCommand
     # Commands to run; lambdas will actually receive the parameters
     # TODO: encapsulate in class?
     # TODO: pipeline streaming requests?
     commandlist = [
-        (None, "python_run:{module}:{function}:{event}"),
+        (None, "python_run:{module}:{function}:{event}")
         # (None, 'emit:##TMPDIR## {out_key}'),
-        ("OK:", "quit:")]
+    ]
 
     def __init__(self, prevState):
         super(RunState, self).__init__(prevState)
@@ -49,6 +72,7 @@ class RunState(CommandListState):
         self.commands = [s.format(**params)
                          if s is not None else None
                          for s in self.commands]
+        logging.debug("RunState: {}".format(self.commands))
 
     def transition(self, msg):
         # TODO: figure out why msg is in transition

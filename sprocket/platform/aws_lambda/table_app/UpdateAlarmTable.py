@@ -97,8 +97,8 @@ def lambda_handler(event, context):
     db_client = boto3.client('dynamodb')
 
     # grab data from lambda event
-    alarm_name = event['alarm_name']
-    new_value = int(event['data'])
+    alarm_name = event['device_name']
+    new_value = int(event['cpu_load'])
 
     # create etcd client
     etcd_client = etcd.Client(

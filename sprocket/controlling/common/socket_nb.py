@@ -1,13 +1,16 @@
 #!/usr/bin/python
 
 import collections
-import logging
 import socket
 import traceback
+import sys
 
 from OpenSSL import SSL
 
 from sprocket.controlling.common.defs import Defs
+from sprocket.controlling.common.logger import get_logger
+
+logger = get_logger(__file__.split('/')[-1])
 
 
 # wrapper around socket-like objects to handle
@@ -58,12 +61,13 @@ class SocketNB(object):
         pass
 
     def close(self):
-        logging.debug("CLOSING SOCKET %s" % traceback.format_exc())
+        traceback.print_stack(file=sys.stdout)
+        #logger.debug("CLOSING SOCKET %s" % traceback.format_exc())
         if self.sock is None:
             return
 
         if Defs.debug:
-            print("CLOSING SOCKET %s" % traceback.format_exc())
+            logger.debug("CLOSING SOCKET {} {}".format(self.fileno(), traceback.format_exc()))
 
         try:
             if isinstance(self.sock, SSL.Connection):
@@ -83,19 +87,26 @@ class SocketNB(object):
             try:
                 nbuf = self.sock.recv(16384)
                 if len(nbuf) == 0:
+                    logger.debug("Got empty string; socket must be closed")
                     break
                 else:
                     self.recv_buf += nbuf
             except SSL.WantReadError:
+                logger.debug("Read error")
                 start_len = -1
                 break
             except SSL.WantWriteError:
+                logger.debug("Write error")
                 self.ssl_write = True
+                start_len = -1
                 break
-            except:
+            except Exception as e:
+                logger.debug("Unknown error {}".format(e))
+                start_len = -1
                 break
 
         if len(self.recv_buf) == start_len:
+            # logger.debug("CLOSING SOCKET")
             self.close()
 
     def do_read(self):
@@ -105,6 +116,7 @@ class SocketNB(object):
         if self.handshaking:
             return self.do_handshake()
 
+        logger.debug("Have '{}' on recv_queue".format(self.recv_queue))
         self._fill_recv_buf()
         if len(self.recv_buf) == 0:
             return
@@ -129,9 +141,34 @@ class SocketNB(object):
 
         self.update_flags()
 
+    def do_peek(self):
+        if self.sock is None:
+            return
+
+        if self.handshaking:
+            return self.do_handshake()
+
+        try:
+            nbuf = self.sock.recv(16384, socket.MSG_PEEK)
+            return len(nbuf) > 0
+        except SSL.WantReadError:
+            pass
+        except SSL.WantWriteError:
+            self.ssl_write = True
+            pass
+        except:
+            pass
+
+
     def update_flags(self):
+        """
+        Update send/recv flags:
+          - (want_write = true) indicates that we have data to send in the send_queue
+          - (want_handle = true) indicates that the recv queue is non-empty
+        """
         self.want_handle = len(self.recv_queue) > 0
         self.want_write = len(self.send_queue) > 0 or self.send_buf is not None
+        # logger.debug("updating flags :: want_handle: {}, want_write: {}".format(self.want_handle, self.want_write))
 
     def enqueue(self, msg):
         self.send_queue.append(self.format_message(msg))
@@ -182,23 +219,28 @@ class SocketNB(object):
                 break
 
     def do_write(self):
+        """
+        Write send buffer to lambda socket
+        """
         if self.sock is None:
             return
 
         if self.handshaking:
             return self.do_handshake()
 
+        logger.debug("Have '{}' on send_queue".format(self.send_queue))
         self._fill_send_buf()
         if self.send_buf is not None:
+            logger.debug("Sending messages {}".format(self.send_buf))
             self._send_raw()
 
         self.update_flags()
 
     def do_handshake(self):
         self.update_flags()
-        logging.debug("doing handshake:"+str(self))
+        logger.debug("doing handshake:"+str(self))
         if not isinstance(self.sock, SSL.Connection):
-            logging.debug("not SSL, returning:"+str(self))
+            logger.debug("not SSL, returning:"+str(self))
             return
 
         self.handshaking = True
@@ -207,13 +249,13 @@ class SocketNB(object):
             self.sock.do_handshake()
         except SSL.WantWriteError:
             self.ssl_write = True
-            logging.debug("SSL.WantWriteError:"+str(self))
+            logger.debug("SSL.WantWriteError:"+str(self))
         except SSL.WantReadError:
-            logging.debug("SSL.WantReadError:"+str(self))
+            logger.debug("SSL.WantReadError:"+str(self))
             pass
         except SSL.Error:
-            logging.error("SSL.Error:"+str(self))
+            logger.error("SSL.Error:"+str(self))
             self.close()
         else:
             self.handshaking = False
-            logging.info("handshaked: "+str(self))
+            logger.info("handshaked: "+str(self))

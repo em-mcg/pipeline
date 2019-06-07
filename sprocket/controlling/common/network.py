@@ -30,6 +30,7 @@ def format_ssl_cert_chain(chain):
 
     return res
 
+
 ###
 #  connect a socket, maybe SSLizing
 ###

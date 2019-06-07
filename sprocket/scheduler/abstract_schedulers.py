@@ -3,8 +3,9 @@
 import logging
 import time
 
+from sprocket.controlling.common.logger import get_logger
 from sprocket.config import settings
-from sprocket.controlling.tracker.machine_state import ErrorState, TerminalState
+from sprocket.controlling.tracker.machine_state import ErrorState, TerminalState, WaitForInputState
 from sprocket.controlling.tracker.tracker import Tracker
 from sprocket.delivery_function.default_delivery_func import default_delivery_func
 from sprocket.scheduler.util import print_task_states
@@ -12,11 +13,13 @@ from sprocket.util.durable_queue import DurableQueue
 
 
 class SchedulerBase(object):
+
+    logger = get_logger("SchedulerBase")
     should_stop = False
 
     @classmethod
     def schedule(cls, pipeline):
-        logging.info('start scheduling pipeline: %s', pipeline.pipe_id)
+        SchedulerBase.logger.info('start scheduling pipeline: %s', pipeline.pipe_id)
         last_print = 0
         tasks = []
         while not cls.should_stop:
@@ -44,9 +47,11 @@ class SchedulerBase(object):
 
             finished_tasks = [t for t in tasks if
                                 isinstance(t.current_state, ErrorState) or
-                                isinstance(t.current_state, TerminalState)]
+                                isinstance(t.current_state, TerminalState) or
+                                isinstance(t.current_state, WaitForInputState)]
             error_tasks = [t for t in tasks if isinstance(t.current_state, ErrorState)]
 
+            SchedulerBase.logger.debug("Have {} finished tasks".format(len(finished_tasks)))
             cls.process_finish_tasks(finished_tasks)
             if len(error_tasks) > 0:
                 logging.error(str(len(error_tasks)) + " tasks failed: ")
@@ -55,20 +60,20 @@ class SchedulerBase(object):
                     logging.error(et.current_state.str_extra())
                     errmsgs.append(et.current_state.str_extra())
                 raise Exception(str(len(error_tasks)) + " tasks failed\n" + "\n".join(errmsgs))
-            tasks = [t for t in tasks if not isinstance(t.current_state, TerminalState)]
+            tasks = [t for t in tasks if t not in finished_tasks and not isinstance(t.current_state, WaitForInputState)]
 
             if buffer_empty and deliver_empty and len(tasks) == 0:
                 break
 
             if time.time() > last_print+1:
                 print_task_states(tasks)
-                # logging.debug("buffer empty: "+str(buffer_empty)+', deliver empty: '+str(deliver_empty))
+                # SchedulerBase.logger.debug("buffer empty: "+str(buffer_empty)+', deliver empty: '+str(deliver_empty))
                 last_print = time.time()
-            time.sleep(3)
+            time.sleep(1)
             # sleep to avoid spinning, we can use notification instead, but so far, this works.
             # it may increase overall latency by at most n*0.01 second, where n is the longest path in the pipeline
 
-        logging.info('finish scheduling pipeline')
+        SchedulerBase.logger.info('finish scheduling pipeline')
 
     @classmethod
     def submit_tasks(cls, pipeline, submitted):

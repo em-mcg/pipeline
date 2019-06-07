@@ -16,6 +16,7 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
+
 def turn_on_debug():
     import socket
     # Allow other computers to attach to ptvsd at this IP address and port.
@@ -27,7 +28,7 @@ def turn_on_debug():
         print "Waiting for debug attach"
         # Pause the program until a remote debugger is attached
         ptvsd.wait_for_attach()
-        #time.sleep(5)
+        time.sleep(5)
         print "Received attach"
 # turn_on_debug()
 

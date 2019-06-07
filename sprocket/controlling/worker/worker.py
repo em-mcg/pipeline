@@ -14,6 +14,11 @@ from OpenSSL import SSL
 from sprocket.controlling.common import network, handler
 from sprocket.controlling.common.defs import Defs
 from sprocket.controlling.common.socket_nb import SocketNB
+from sprocket.controlling.common.logger import get_logger
+from sprocket.controlling.common.handler_sockets import get_arwsocks
+
+
+logger = get_logger(__file__.split('/')[-1])
 
 
 ###
@@ -45,6 +50,15 @@ def finished_run(msg, vals):
 
     vals['stsock'].enqueue(indata)
 
+
+def get_sockets(vals):
+    socknames = ['cmdsock', 'stsock']
+    socklists = map(lambda sn: vals.get(sn), socknames)
+    sockets = [s for s in socklists if s is not None]
+    sockets.extend(info[1] for info in vals.setdefault('runinfo', []))
+    return sockets
+
+
 ###
 #  get state file from stsock
 ###
@@ -53,7 +67,7 @@ def get_input_state(vals):
     (msg, data) = indata.split(':', 1)
 
     if Defs.debug:
-        print "CLIENT received from neighbor: %s... (%d)" % (msg, len(data))
+        logger.debug("CLIENT received from neighbor: %s... (%d)" % (msg, len(data)))
 
     assert msg[:6] == "STATE("
     lind = 6
@@ -66,25 +80,6 @@ def get_input_state(vals):
     # NOTE we write to a tmpfile and rename because renaming is atomic!
     os.rename(vals['_tmpdir'] + "/temp.state", vals['_tmpdir'] + "/%d.state" % statenum)
 
-###
-#  figure out which sockets need to be selected
-###
-def get_arwsocks(vals):
-    # asocks is all extant sockets
-    socknames = ['cmdsock', 'stsock']
-    asocks = [ s for s in [ vals.get(n) for n in socknames ] if s is not None ] + \
-             [ info[1] for info in vals.setdefault('runinfo', []) ]
-
-    # rsocks is all objects that we could select upon
-    rsocks = [ s for s in asocks
-                 if isinstance(s, socket.SocketType)
-                 or isinstance(s, SSL.Connection)
-                 or (isinstance(s, SocketNB) and s.sock is not None) ]
-
-    # wsocks is all rsocks that indicate they want to be written
-    wsocks = [ s for s in asocks if isinstance(s, SocketNB) and (s.ssl_write or s.want_write) ]
-
-    return (asocks, rsocks, wsocks)
 
 ###
 #  make command string
@@ -153,7 +148,7 @@ def make_cmdstring(msg, vals):
     command = command.replace("##TMPDIR##", vals['_tmpdir'])
 
     if Defs.debug:
-        print "CLIENT running '%s'" % command
+        logger.debug("CLIENT running '%s'" % command)
 
     return command
 
@@ -183,6 +178,27 @@ def make_urstring(msg, vals, keyk, filek):
 
     return (success, bucket, key, filename)
 
+
+def close_sockets(sockets):
+    logger.debug("closing sockets")
+    for a in sockets:
+        # try to be nice... but not too hard
+        try:
+            a.shutdown(socket.SHUT_RDWR)
+        except:
+            pass
+
+        try:
+            a.shutdown()
+        except:
+            pass
+
+        try:
+            a.close()
+        except:
+            pass
+
+
 make_uploadstring = lambda m, v: make_urstring(m, v, 'outkey', 'fromfile')
 make_retrievestring = lambda m, v: make_urstring(m, v, 'inkey', 'targfile')
 
@@ -191,7 +207,7 @@ make_retrievestring = lambda m, v: make_urstring(m, v, 'inkey', 'targfile')
 #  worker enters here
 ###
 def worker_handler(event, context):
-    print "Worker start"
+    logger.debug("Worker start")
     lambda_start_ts = time.time() if not 'start_ts' in event else event['start_ts']
 
     Defs.cmdstring = cmdstring
@@ -235,15 +251,17 @@ def worker_handler(event, context):
            , 'hash_s3keys': hash_s3keys
            , '_tmpdir': tempfile.mkdtemp(prefix="lambda_", dir="/tmp")
            , 'context': context
-           }
+           , 'restart': False
+    }
     # default: just run the command and exit
     if mode == 0:
         return handler.do_run('', {'event': event, 'context': context})
 
-    print "Connecting to CC at {}:{}".format(addr, port)
+    logger.debug("Connecting to CC at {}:{}".format(addr, port))
     s = network.connect_socket(addr, port, cacert, srvcrt, srvkey)
-    print "Connected to CC"
-    s.enqueue(json.dumps({'lambda_function': event.get('lambda_function'), 'lambda_start_ts': lambda_start_ts}))  # send init msg
+    logger.debug("Connected to CC")
+    # send init message
+    s.enqueue(json.dumps({'lambda_function': event.get('lambda_function'), 'lambda_start_ts': lambda_start_ts}))
 
     if not isinstance(s, SocketNB):
         return str(s)
@@ -251,19 +269,22 @@ def worker_handler(event, context):
     vals['cmdsock'].enqueue('OK:HELLO')
 
     while True:
-        (_, rsocks, wsocks) = get_arwsocks(vals)
+        logger.debug("Polling sockets")
+        sockets = get_sockets(vals)
+        (_, rsocks, wsocks) = get_arwsocks(sockets)
         if len(rsocks) == 0 and len(wsocks) == 0:
             if Defs.debug:
-                print "***WARNING*** unclean client exit"
+                logger.warn("***WARNING*** unclean client exit")
             break
+
         try:
             (rfds, wfds, _) = select.select(rsocks, wsocks, [], Defs.timeout)
         except Exception as e:
-            print "error:", e, "rsocks:", rsocks, "wsocks", wsocks
+            logger.error("error: {}, rsocks: {}, wsocks: {}".format(e, rsocks, wsocks))
             raise e
 
         if len(rfds) == 0 and len(wfds) == 0 and len(vals.setdefault('runinfo', [])) == 0:
-            print "CLIENT TIMEOUT"
+            logger.debug("CLIENT TIMEOUT")
             break
 
         # do all the reads we can
@@ -284,8 +305,11 @@ def worker_handler(event, context):
         while vals['cmdsock'].want_handle and not break_outer:
             nxt = vals['cmdsock'].dequeue()
             break_outer = handler.handle_message(nxt, vals)
+            if vals['restart']:
+                logger.info("Worker received restart event. Starting new worker_handler")
 
         if break_outer:
+            logger.debug("Breaking worker_handler loop")
             break
 
         ### runsocks
@@ -304,6 +328,7 @@ def worker_handler(event, context):
                 sock.close()
                 del sock
 
+                logger.debug("Enqueuing message from runsock")
                 vals['cmdsock'].enqueue(outmsg)
 
                 if outmsg[:12] == "OK:RETVAL(0)":
@@ -313,23 +338,11 @@ def worker_handler(event, context):
             # handle receiving new state file from previous lambda
             get_input_state(vals)
 
-    (afds, _, _) = get_arwsocks(vals)
-    for a in afds:
-        # try to be nice... but not too hard
-        try:
-            a.shutdown(socket.SHUT_RDWR)
-        except:
-            pass
+    logger.debug("worker finished. clean sockets")
 
-        try:
-            a.shutdown()
-        except:
-            pass
-
-        try:
-            a.close()
-        except:
-            pass
+    sockets = get_sockets(vals)
+    (afds, _, _) = get_arwsocks(sockets)
+    close_sockets(afds)
 
     if vals.get('rm_tmpdir') and vals.get('_tmpdir') is not None:
         shutil.rmtree(vals.get('_tmpdir'))

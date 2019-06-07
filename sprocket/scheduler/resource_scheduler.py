@@ -1,100 +1,16 @@
 #!/usr/bin/python
-import logging
-import threading
-import json
 
 from sprocket.controlling.tracker.task import Task
 from sprocket.controlling.tracker.tracker import Tracker
+from sprocket.controlling.common.logger import get_logger
 from sprocket.scheduler.abstract_schedulers import SchedulerBase
-
-
-# TODO: Move Resource classes somewhere else
-class Resource:
-    """
-    Represents a simple resource
-    """
-    def __init__(self, name, max_allocation):
-        self.name = name
-        self.max_allocation = max_allocation
-        self.available_allocation = max_allocation
-        self.lock = threading.Lock()
-
-    @staticmethod
-    def from_json(js):
-        """
-        Create a Resource from a dictionary
-        :param js: a python dictionary or json string
-        :return: Resource object
-        """
-        if not isinstance(js, dict):
-            js = json.loads(js)
-
-        return Resource(
-            name=js['name'],
-            max_allocation=js['max_allocation']
-        )
-
-
-class ResourceRequest(Resource):
-    """
-    Represents a request for a particular resource
-    """
-    def __init__(self, name, max_allocation, required_allocation):
-        Resource.__init__(self, name, max_allocation)
-        self.required_allocation = required_allocation
-
-    @staticmethod
-    def from_json(js):
-        if not isinstance(js, dict):
-            js = json.loads(js)
-
-        return ResourceRequest(
-            name=js['name'],
-            max_allocation=js['max_allocation'],
-            required_allocation=js['required_allocation']
-        )
-
-
-class ResourceManager:
-    """
-    Manage the current resources in memory
-    """
-
-    def __init__(self):
-        self.resources = {}
-        self.resources_lock = threading.Lock()
-
-    def register_resource(self, resource_name, amount):
-        with self.resources_lock:
-            self.resources[resource_name] = Resource(resource_name, amount)
-
-    def available_resource(self, resource_name):
-        with self.resources[resource_name].lock:
-            return self.resources[resource_name].available_allocation
-
-    def release_resource(self, resource_name, amount):
-        with self.resources[resource_name].lock:
-            self.resources[resource_name].available_allocation += amount
-
-    def aquire_resource(self, resource_name, amount):
-        with self.resources[resource_name].lock:
-            self.resources[resource_name].available_allocation -= amount
-
-    def resource_exists(self, resource_name):
-        return resource_name in self.resources
-
-    def reserve_resources(self, resource_request_array):
-        for r in resource_request_array:
-            self.aquire_resource(r.name, r.required_allocation)
-
-    def release_resources(self, resource_request_array):
-        for r in resource_request_array:
-            self.release_resource(r.name, r.required_allocation)
+from sprocket.scheduler.resources import Resource, ResourceRequest, ResourceManager
 
 
 class ResourceScheduler(SchedulerBase):
 
     resource_manager = ResourceManager()
+    logger = get_logger(__file__.split('/')[-1])
 
     @classmethod
     def submit_tasks(cls, pipeline, submitted=[]):
@@ -116,16 +32,17 @@ class ResourceScheduler(SchedulerBase):
                     regions=stage.region,
                 )
                 # let scheduler, pipeline, and tracker see the created task
-                logging.debug('Task requires: "{}"'.format(t.resources))
+                ResourceScheduler.logger.debug('Task requires: "{}"'.format(t.resources))
                 resources_sufficient = True
                 resources = map(ResourceRequest.from_json, t.resources)
+                t.resources = resources  # TODO: instantiate resource requests somewhere else
 
                 for resource in resources:
                     if not cls.resource_manager.resource_exists(resource.name):
                         cls.resource_manager.register_resource(resource.name, resource.max_allocation)
 
                     if cls.resource_manager.available_resource(resource.name) < resource.required_allocation:
-                        logging.debug("Insufficient resources for task {}. Need {} of {} but have {}".format(
+                        ResourceScheduler.logger.debug("Insufficient resources for task {}. Need {} of {} but have {}".format(
                             t,
                             resource.required_allocation,
                             resource.name,
@@ -135,22 +52,24 @@ class ResourceScheduler(SchedulerBase):
                         break
 
                 if resources_sufficient:
-                    logging.debug("Have sufficient resources for task {}".format(t))
+                    ResourceScheduler.logger.debug("Have sufficient resources for task {}".format(t))
                     cls.resource_manager.reserve_resources(resources)
                     submitted.append(t)
                     pipeline.tasks.append(t)
                     Tracker.submit(t)
                     count_submitted += 1
-                    logging.debug('submitted a task: ' + str(t))
+                    ResourceScheduler.logger.debug('submitted a task: ' + str(t))
 
             # if we failed to submit a task due to resource insufficiency, place it back on deliver_queue
+            ResourceScheduler.logger.debug("Placing {} tasks back on delivery queue".format(len(tasks_to_redeliver)))
             map(lambda ttd: stage.deliver_queue.put(ttd), tasks_to_redeliver)
         return count_submitted
 
     @classmethod
     def process_finish_tasks(cls, tasks):
         for t in tasks:
-            logging.debug("Releasing resources")
-            for r in map(Resource.from_json, t.resources):
-                cls.resource_manager.release_resource(r.name, r.max_allocation)
-
+            ResourceScheduler.logger.debug("Releasing resources")
+            for r in t.resources:
+                cls.resource_manager.release_resource(r.name, r.required_allocation)
+                r.required_allocation = 0  # task is done; needs no more resources
+            # t.resources = []

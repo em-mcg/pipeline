@@ -6,13 +6,16 @@ import grpc
 from sprocket.config import settings
 from sprocket.service import pipeline_pb2_grpc, pipeline_pb2
 
+import json
 import pdb
 
 
-def invoke_pipeline(args):
+def invoke_pipeline(args, pipeline_stub):
     spec = args.pipeline_spec.read()
+    print spec
     inputstreams = {}
     for i in args.inputs:
+        print "i", i
         # input: STREAM:TYPE:RESOURCE
         stream, inputtype, res = i.split(':', 2)
         inputs = []
@@ -35,9 +38,15 @@ def invoke_pipeline(args):
             inputstreams[stream] = instream
         inputstreams[stream].inputs.extend(inputs)
 
-    channel = grpc.insecure_channel('%s:%d' % (settings['daemon_addr'], settings['daemon_port']))
-    stub = pipeline_pb2_grpc.PipelineStub(channel)
-    response = stub.Submit(pipeline_pb2.SubmitRequest(pipeline_spec=spec, inputstreams=inputstreams.values()))
+    print "Input values: ", inputstreams.values()
+    print "Input keys", inputstreams.keys()
+    print "InputStreams: ", json.dumps(inputstreams, indent=4)
+    response = pipeline_stub.Submit(
+        pipeline_pb2.SubmitRequest(
+            pipeline_spec=spec,
+            inputstreams=inputstreams.values()
+        )
+    )
     if response.success:
         return response.mpd_url
     else:
@@ -53,6 +62,9 @@ if __name__ == '__main__':
                         default=open("pipeline_conf.json", 'r'))
     args = parser.parse_args()
 
+    channel = grpc.insecure_channel('%s:%d' % (settings['daemon_addr'], settings['daemon_port']))
+    pipeline_stub = pipeline_pb2_grpc.PipelineStub(channel)
+
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s (%(threadName)s) %(filename)s:%(lineno)d: %(message)s',
@@ -61,4 +73,4 @@ if __name__ == '__main__':
 
     logging.debug("arguments: %s", args)
     logging.debug("config: %s", settings)
-    logging.info("pipeline returns: %s", invoke_pipeline(args))
+    logging.info("pipeline returns: %s", invoke_pipeline(args, pipeline_stub))

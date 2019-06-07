@@ -53,7 +53,7 @@ class Pipeline(object):
 
     def add_stage(self, stage):
         if stage.key in self.stages:
-            raise Exception('existing stage key')
+            raise Exception('Stage key already exists')
         self.stages[stage.key] = stage
 
 
@@ -78,13 +78,13 @@ def create_from_spec(pipe_spec):
         func_name = node.get('delivery_function', 'default_delivery_func')
         func_module = importlib.import_module('sprocket.delivery_function.' + func_name)
         pipe.add_stage(Pipeline.Stage(
-            node['name']
-            , node['stage']
-            , event['lambda_function']
-            , init_state
-            , node.get('config', {})
-            , node.get('event', event)
-            , [node.get('region', settings['default_region'])]
+              key=node['name']
+            , stage_name=node['stage']
+            , lambda_function=event['lambda_function']
+            , init_state=init_state
+            , config=node.get('config', {})
+            , event=node.get('event', event)
+            , region=[node.get('region', settings['default_region'])]
             , delivery_func=getattr(func_module, func_name)
         ))
 
@@ -108,7 +108,7 @@ def create_from_spec(pipe_spec):
             pipe.stages[src_node].downstream_map[src_key] = pipe.outputs[dst_node]
         else:
             if src_key in pipe.stages[src_node].downstream_map:
-                raise Exception('existing src key: %s', stream)
+                raise Exception('Source key already exists: %s', stream)
             if dst_key not in pipe.stages[dst_node].buffer_queues:
                 pipe.stages[dst_node].buffer_queues[dst_key] = DurableQueue() if durable is True else Queue.Queue()
             pipe.stages[src_node].downstream_map[src_key] = (dst_key, pipe.stages[dst_node].buffer_queues[dst_key])

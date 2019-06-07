@@ -5,12 +5,15 @@ import signal
 import subprocess
 import sys
 import traceback
+import datetime
 from multiprocessing import TimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Lock
 from time import sleep, time
 import random
 import string
+import json
+import logging
 
 import boto3
 
@@ -18,9 +21,12 @@ from sprocket.controlling.common.defs import Defs
 from sprocket.controlling.common.network import connect_socket
 from sprocket.controlling.common.socket_nb import SocketNB
 from sprocket.controlling.worker.fd_wrapper import FDWrapper
-#from sprocket.util.misc import ForkedPdb
+from sprocket.controlling.common.logger import get_logger
+# from sprocket.util.misc import ForkedPdb
 
 s3_client = boto3.client('s3')
+
+logger = get_logger(__file__.split('/')[-1])
 
 ###
 #  set a value
@@ -122,17 +128,20 @@ def _background(runner, vals, queuemsg):
         donemsg = "FAIL: %s" % traceback.format_exc()
         retval = 1
 
-    print donemsg
+    logger.debug(donemsg)
     if sock is None:
         if vals.get('cmdsock') is not None:
-            vals['cmdsock'].enqueue(donemsg)
+            if "NEW_TASK" not in donemsg and "WAIT" not in donemsg:
+                logger.debug("Enqueuing result in cmdsock")
+                vals['cmdsock'].enqueue(donemsg)
             return False
-
         else:
+            # for mode 0 where we don't connect to a command server
             # for mode 0 where we don't connect to a command server
             return donemsg
 
     else:
+        logging.debug("Socket is none")
         msg = SocketNB.format_message(donemsg)
         sock.send(msg)
         sock.close()
@@ -212,7 +221,7 @@ def do_quit(_, vals):
 #  run the command
 ###
 def do_run(msg, vals):
-    print "handler.do_run"
+    logger.debug("handler.do_run: msg: {}".format(msg))
     cmdstring = Defs.make_cmdstring(msg, vals)
 
     def ret_helper():
@@ -223,7 +232,7 @@ def do_run(msg, vals):
             p.wait()
             retval = p.returncode
             donemsg = 'OK:RETVAL(%d):OUTPUT(%s):COMMAND(%s)' % (retval, p.stdout.read().strip(), cmdstring)
-            print donemsg
+            logger.debug(donemsg)
         except Exception as e:
             donemsg = 'FAIL:RUN %s' % str(e)
             retval = 1
@@ -236,7 +245,7 @@ def do_run(msg, vals):
 #  run a python command
 ###
 def do_python_run(msg, vals):
-    print "handler.do_python_run"
+    logger.debug("handler.do_python_run")
     cmdstring = Defs.make_cmdstring(msg, vals)
 
     def ret_helper():
@@ -253,8 +262,9 @@ def do_python_run(msg, vals):
             vals['context'].aws_request_id = aws_request_id
             funct(eval(event), vals['context'])
 
+            # donemsg = 'OK:COMMAND(%s)' % cmdstring
             donemsg = 'OK:RETVAL(%d):COMMAND(%s)' % (retval, cmdstring)
-            print donemsg
+            logger.debug(donemsg)
         except Exception as e:
             traceback.print_exc()
             donemsg = 'FAIL:RUN %s' % str(e)
@@ -263,6 +273,88 @@ def do_python_run(msg, vals):
         return (donemsg, retval)
 
     return _background(ret_helper, vals, 'OK:RUNNING(%s)' % cmdstring)
+
+
+def run_new_task(msg, vals):
+    logger.debug("handler.run_new_task")
+    cmdstring = Defs.make_cmdstring(msg, vals)
+
+    def ret_helper():
+        retval = 0
+        try:
+            message = msg.strip(":")
+            import json
+            event = json.loads(message)
+            vals['event'] = event
+            vals['restart'] = True
+            lambda_start_ts = time() if not 'start_ts' in event else event['start_ts']
+
+            logger.debug("Enqueuing command messages")
+            vals['cmdsock'].enqueue(json.dumps({'lambda_function': event.get('lambda_function'), 'lambda_start_ts': lambda_start_ts}))
+            vals['cmdsock'].enqueue('OK:HELLO')
+            vals['cmdsock'].do_write()
+            logger.debug("Wrote commands")
+
+            donemsg = 'OK:RETVAL(%d):NEW_TASK(%s)' % (retval, cmdstring)
+            logger.debug(donemsg)
+        except Exception as e:
+            traceback.print_exc()
+            donemsg = 'FAIL:RUN %s' % str(e)
+            retval = 1
+
+        return (donemsg, retval)
+
+    return _background(ret_helper, vals, 'OK:NEW_TASK(%s)' % cmdstring)
+
+def do_wait(msg, vals):
+    logger.debug("handler.do_wait")
+    cmdstring = Defs.make_cmdstring(msg, vals)
+
+    def ret_helper():
+        retval = 0
+        #donemsg = 'OK:RETVAL(0):TIME_OUT(%s)' % cmdstring
+        donemsg = 'OK:RETVAL(0):WAIT(%s)' % cmdstring
+        try:
+            wait_time = float((msg.strip(":")))
+            logger.debug("sleeping for {} seconds".format(wait_time))
+            event = vals['event']
+
+            lambda_start_ts = time() if not 'start_ts' in event else event['start_ts']
+
+            #logger.debug("Enqueuing command messages")
+            #vals['cmdsock'].enqueue(json.dumps({'lambda_function': event.get('lambda_function'), 'lambda_start_ts': lambda_start_ts}))
+            #vals['cmdsock'].enqueue('OK:HELLO')
+            #vals['cmdsock'].do_write()
+            #logger.debug("Wrote commands")
+
+            end_time = datetime.datetime.now() + datetime.timedelta(seconds=wait_time)
+
+            # TODO: probably shouldn't spin
+            while True:
+                now = datetime.datetime.now()
+                vals['cmdsock'].do_read()
+                if vals['cmdsock'].want_handle or vals['cmdsock'].want_write:
+                    logger.debug("want handle")
+                    donemsg = 'OK:RETVAL(0):WAIT(%s)' % cmdstring
+                    break
+                if now > end_time:
+                    logger.debug("wait timeout; now: {}; end: {}".format(now, end_time))
+                    #donemsg = 'OK:RETVAL(0):TIME_OUT(%s)' % cmdstring
+                    break
+                sleep(0.001)
+
+            # vals['cmdsock'].do_write()
+            # sleep(wait_time)
+            # donemsg = 'OK:RETVAL(0):WAIT(%s)' % cmdstring
+        except Exception as e:
+            traceback.print_exc()
+            donemsg = 'FAIL:WAIT %s' % str(e)
+            retval = 1
+
+        return (donemsg, retval)
+
+    return _background(ret_helper, vals, 'OK:WAIT(%s)' % cmdstring)
+
 
 ###
 #  connect to peer lambda
@@ -516,8 +608,8 @@ def do_emit_list(msg, vals):
             protocol = k.split('://', 1)[0]
             path = k.split('://', 1)[1]
         except:
-            print("k: %s" % k)
-            print("file_key_pairs: %s" % file_key_pairs)
+            logger.error(("k: %s" % k))
+            logger.error("file_key_pairs: %s" % file_key_pairs)
             #ForkedPdb().set_trace()
 
         if protocol == 's3':
@@ -566,7 +658,7 @@ def do_collect_list(msg, vals):
             try:
                 s3_client.download_file(bucket, key, f)
             except:
-                print("bucket: %s, key: %s, f: %s" % (bucket, key, f))
+                logger.error("bucket: %s, key: %s, f: %s" % (bucket, key, f))
                 donemsg = 'FAIL:COLLECT_LIST(%s->%s: %s)' % (k, f, traceback.format_exc())
                 break
 
@@ -604,20 +696,23 @@ message_types = { 'set:': do_set
                 , 'quit:': do_quit
                 , 'run:': do_run
                 , 'python_run': do_python_run
+                , 'wait': do_wait
                 , 'connect:': do_connect
                 , 'close_connect:': do_close_connect
+                , 'run_new_task': run_new_task
                 }
 
 
 def handle_message(msg, vals):
     if Defs.debug:
-        print "CLIENT HANDLING %s" % msg
+        logger.debug("CLIENT HANDLING %s" % msg)
 
     for mtype in message_types:
         if msg[:len(mtype)] == mtype:
             return message_types[mtype](msg[len(mtype):], vals)
 
     # if we got here, we don't recognize the command
+    logger.warn("command {} not recognized".format(msg))
     vals['cmdsock'].enqueue("FAIL(no such command '%s')" % msg)
     return False
 
@@ -631,11 +726,13 @@ message_responses = { 'set': 'OK:SET'
                     , 'echo': 'OK:ECHO'
                     , 'run': 'OK:R'
                     , 'python_run': 'OK:R'
+                    , 'wait': 'OK:R'
                     , 'listen': 'OK:LISTEN'
                     , 'close_listen': 'OK:CLOSE_LISTEN'
                     , 'connect': 'OK:CONNECT'
                     , 'close_connect': 'OK:CLOSE_CONNECT'
-                    }
+                    , 'run_new_task': 'OK:R'
+}
 
 
 def expected_response(msg):

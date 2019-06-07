@@ -1,13 +1,15 @@
 #!/usr/bin/python
-import logging
 import time
 import traceback
 
 from sprocket.controlling.common import handler
 from sprocket.controlling.common.defs import Defs
 from sprocket.controlling.common.socket_nb import SocketNB
+from sprocket.controlling.common.logger import get_logger
 from sprocket.util.misc import rand_str
 
+
+logger = get_logger(__file__.split('/')[-1])
 
 class MachineState(SocketNB):
     expect = None
@@ -95,6 +97,7 @@ class MachineState(SocketNB):
         while state.want_handle:
             msg = state.dequeue()
             self.do_trace(msg, 'recv')
+            logger.debug("Received msg: {}".format(msg))
 
             if msg[:4] == "FAIL":
                 return ErrorState(self, msg)
@@ -103,12 +106,12 @@ class MachineState(SocketNB):
                 state = state.transition(msg)
             except ValueError as e:
                 retries.append(msg)
-                logging.error(e.message)
-                logging.error(traceback.format_exc())
+                logger.error(e.message)
+                logger.error(traceback.format_exc())
                 self.do_trace(msg, 'undo_recv')
 
             if Defs.debug:
-                print repr(state)
+                logger.debug(repr(state))
             state.update_flags()
 
         # put any that were skipped back in the queue
@@ -146,6 +149,7 @@ class TerminalState(MachineState):
     def __init__(self, prevState, **kwargs):
         super(TerminalState, self).__init__(prevState, **kwargs)
 
+
 class ErrorState(TerminalState):
     def __init__(self, prevState, err=""):
         super(ErrorState, self).__init__(prevState)
@@ -154,6 +158,7 @@ class ErrorState(TerminalState):
 
     def str_extra(self):
         return str(self.err)
+
 
 class OnePassState(MachineState):
     command = None
@@ -187,6 +192,7 @@ class OnePassState(MachineState):
 
     def post_transition(self):
         return self.nextState(self)
+
 
 class MultiPassState(MachineState):
     nextState = TerminalState
@@ -231,6 +237,7 @@ class MultiPassState(MachineState):
     def get_expect(self):
         return self.expects[self.cmdNum]
 
+
 class CommandListState(MultiPassState):
     nextState = TerminalState
     commandlist = []
@@ -257,9 +264,11 @@ class CommandListState(MultiPassState):
             # if we're not pipelined, then we just do command-response
             self.expects += pre_expects
 
+        logger.debug(self.expects)
         if self.expects[0] is None:
             self.expects[0] = rand_str(32)
             self.kick()
+
 
 class IfElseState(OnePassState):
     extra = "(ifelse state)"
@@ -275,6 +284,7 @@ class IfElseState(OnePassState):
             return self.consequentState(self)
         else:
             return self.alternativeState(self)
+
 
 class ForLoopState(OnePassState):
     loopState = TerminalState
@@ -303,6 +313,7 @@ class ForLoopState(OnePassState):
 
     def str_extra(self):
         return "(for %d; %d; %d)" % (self.iterInit, self.info[self.iterKey], self.iterFin)
+
 
 class SuperpositionState(MachineState):
     state_constructors = [TerminalState]
@@ -382,3 +393,11 @@ class InfoWatcherState(OnePassState):
 
     def info_updated(self):
         self.kick()
+
+
+class WaitForInputState(CommandListState):
+    extra = "(wait for input state)"
+
+    def __init__(self, prevState):
+        super(WaitForInputState, self).__init__(prevState)
+

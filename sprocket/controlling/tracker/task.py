@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from sprocket.stages import FinalStateTemplate
-import logging
+from sprocket.controlling.tracker.machine_state import TerminalState, ErrorState, WaitForInputState
 
 
 class Task(object):
@@ -17,8 +17,10 @@ class Task(object):
         self.resources = self.config.get('resources', {})
 
     def __str__(self):
-        return "task created" if self.current_state is None else self.current_state.__module__.split('.')[-1] + \
-                                                                 ':' + self.current_state.__class__.__name__
+        return "task created" \
+            if self.current_state is None \
+            else self.current_state.__module__.split('.')[-1] + \
+                 ':' + self.current_state.__class__.__name__
 
     def rewire(self, ns):
         self.current_state = self.constructor(ns, task=self, **self.kwargs)
@@ -35,9 +37,16 @@ class Task(object):
     def send_async_msg(self, msg):
         self.current_state.outofband_msg(msg)
 
+    def is_terminated(self):
+        return isinstance(self.current_state, TerminalState) or isinstance(self.current_state, ErrorState)
+
+    def is_waiting(self):
+        return isinstance(self.current_state, WaitForInputState)
+
+
 class TaskStarter(object):
-    def __init__(self, ns):
-        self.current_state = ns
+    def __init__(self, socketNB):
+        self.current_state = socketNB
         self.rwflag = 0
 
     def do_read(self):
@@ -48,6 +57,12 @@ class TaskStarter(object):
 
     def do_handle(self):
         raise Exception("TaskStarter can't handle any message, should have transitioned into a Task")
+
+    def is_waiting(self):
+        return False
+
+    def is_terminated(self):
+        return False
 
 
 class OrphanedTask(Task):

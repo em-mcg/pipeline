@@ -99,7 +99,7 @@ class PipelineServer(pipeline_pb2_grpc.PipelineServicer):
             # return pipeline_pb2.SubmitReply(success=False, error_msg='no output is found')
 
         except Exception as e:
-            logging.error(traceback.format_exc())
+            logging.error("Received exception: {}".format(traceback.format_exc()))
             if 'pipe_dir' in vars():
                 with open(pipe_dir + '/log_pb', 'wb') as f:
                     f.write(logger.serialize())

@@ -40,7 +40,14 @@ TMPDIR=$(mktemp -d)
 ZIPFILE="$TMPDIR"/lambda_code.zip
 AWS_DIR="$(dirname $(readlink -f "$0"))"/..
 SPROCKET_ROOT_S_PARENT="$AWS_DIR"/../../..
-SPROCKET_FILES="sprocket/__init__.py sprocket/controlling/__init__.py sprocket/controlling/worker/__init__.py sprocket/controlling/worker/fd_wrapper.py sprocket/controlling/worker/worker.py sprocket/controlling/common/__init__.py sprocket/controlling/common/network.py sprocket/controlling/common/handler.py sprocket/controlling/common/defs.py sprocket/controlling/common/socket_nb.py"
+SPROCKET_FILES="sprocket/__init__.py sprocket/controlling/__init__.py \
+                sprocket/controlling/worker/__init__.py sprocket/controlling/worker/fd_wrapper.py \
+                sprocket/controlling/worker/worker.py sprocket/controlling/common/__init__.py \
+                sprocket/controlling/common/network.py sprocket/controlling/common/handler.py \
+                sprocket/controlling/common/defs.py sprocket/controlling/common/socket_nb.py \
+                sprocket/controlling/common/logger.py \
+                sprocket/controlling/common/handler_sockets.py"
+
 LAMBDA_FUNCTION="$AWS_DIR"/lambda_function.py
 COMMON_DEPS_TAR="$AWS_DIR"/common_deps.tar.gz
 APP=$(readlink -f "$1")

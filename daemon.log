@@ -1,0 +1,788 @@
+2019-06-07 21:21:44 (MainThread) root:65: config: {u'default_lambda_function': u'lambda_test', u'tracker_port': 13580, u'aws_access_key_id_file': u'../aws_access_key_id', u'srvkey_file': u'../ssl/server_key.pem', u'use_tar': False, u'platform': u'aws_lambda', u'default_region': u'us-west-1', u's3_threadpool_size': 4, u'_simp_scheduler': u'SimpleScheduler', u'srvcrt_file': u'../ssl/server_cert.pem', u'straggler_configs': u'0.9 2 0.7', u'storage_base': u's3://emcg-ucsd/', u'_con_scheduler': u'ConcurrencyLimitPriorityScheduler', u'scheduler': u'ResourceScheduler', u'temp_storage_base': u's3://pipetemp-', u'concurrency_limit': 200, u'daemon_addr': u'ec2-52-53-155-252.us-west-1.compute.amazonaws.com', u'tracker_backlog': 3000, u'aws_secret_access_key_file': u'../aws_secret_access_key', u'hash_bucket': True, u'daemon_port': 24680}
+2019-06-07 21:22:07 (Thread-3) root:29: PipelineServer handling submit request
+2019-06-07 21:22:07,005 (Thread-3) SchedulerBase:22: start scheduling pipeline: 20190607212207-LavR
+2019-06-07 21:22:07 (Thread-3) root:15: move an event from buffer to deliver queue
+2019-06-07 21:22:07 (Thread-3) root:17: finish moving, returning
+2019-06-07 21:22:07,006 (Thread-3) resource_scheduler.pyc:35: Task requires: "[{u'max_allocation': 1, u'required_allocation': 1, u'name': u'device_0'}]"
+2019-06-07 21:22:07,007 (Thread-3) resource_scheduler.pyc:55: Have sufficient resources for task task created
+2019-06-07 21:22:07,007 (Thread-3) tracker.pyc:495: Tracker _start
+2019-06-07 21:22:07,008 (Thread-4) tracker.pyc:156: tracker listening to port: 13580
+2019-06-07 21:22:07 (Thread-4) root:113: start listening
+2019-06-07 21:22:07 (Thread-5) root:29: PipelineServer handling submit request
+2019-06-07 21:22:07,010 (Thread-3) resource_scheduler.pyc:61: submitted a task: task created
+2019-06-07 21:22:07,010 (Thread-3) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:07,010 (Thread-3) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:07 (Thread-3) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:07,011 (Thread-6) tracker.pyc:225: Tracker _invocation_loop
+2019-06-07 21:22:07,013 (Thread-5) SchedulerBase:22: start scheduling pipeline: 20190607212207-ZCfg
+2019-06-07 21:22:07 (Thread-5) root:15: move an event from buffer to deliver queue
+2019-06-07 21:22:07 (Thread-5) root:17: finish moving, returning
+2019-06-07 21:22:07,014 (Thread-5) resource_scheduler.pyc:35: Task requires: "[{u'max_allocation': 1, u'required_allocation': 1, u'name': u'device_0'}]"
+2019-06-07 21:22:07,014 (Thread-5) resource_scheduler.pyc:49: Insufficient resources for task task created. Need 1 of device_0 but have 0
+2019-06-07 21:22:07,014 (Thread-5) resource_scheduler.pyc:64: Placing 1 tasks back on delivery queue
+2019-06-07 21:22:07,014 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:07 (Thread-5) root:11: 
+0 task(s) running
+
+
+Initializing pylaunch... done.
+2019-06-07 21:22:07,077 (Thread-6) tracker.pyc:298: No waiting lambda found; launching new one
+2019-06-07 21:22:07,077 (Thread-6) tracker.pyc:299: Putting lambda_test invocation on launch_queue
+2019-06-07 21:22:07,078 (Thread-6) tracker.pyc:323: Invoking 1 worker(s) takes 1.2149810791 ms
+2019-06-07 21:22:07,078 (Thread-6) tracker.pyc:325: Tracker _invocation_loop sleep
+the first invoc stayed in queue for: 3.1983e-05 seconds, 3e-05 processor seconds
+done.
+Opening sockets......done.
+launchpar takes: 0.0993025 seconds to start 1 batched reqs
+2019-06-07 21:22:07,726 (Thread-4) tracker.pyc:395: listening sock got conn in
+2019-06-07 21:22:07,726 (Thread-4) tracker.pyc:115: new conn from addr: 52.53.230.190:55054
+2019-06-07 21:22:07,726 (Thread-4) socket_nb.pyc:241: doing handshake:15
+2019-06-07 21:22:07,726 (Thread-4) socket_nb.pyc:243: not SSL, returning:15
+2019-06-07 21:22:07,727 (Thread-4) tracker.pyc:134: fd_task_map: {15: <sprocket.controlling.tracker.task.TaskStarter object at 0x7f6f0759ad90>}
+2019-06-07 21:22:07,727 (Thread-4) tracker.pyc:198: Task with socket 15 is 15
+2019-06-07 21:22:07,727 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:07,827 (Thread-4) tracker.pyc:399: conn sock 15 got buffer readable
+2019-06-07 21:22:07,828 (Thread-4) socket_nb.pyc:119: Have 'deque([])' on recv_queue
+2019-06-07 21:22:07,828 (Thread-4) socket_nb.pyc:104: Unknown error [Errno 11] Resource temporarily unavailable
+2019-06-07 21:22:07,828 (Thread-4) tracker.pyc:402: recv_queue: deque(['{"lambda_function": "lambda_test", "lambda_start_ts": 1559942527.707666}', 'OK:HELLO'])
+2019-06-07 21:22:07,828 (Thread-4) tracker.pyc:198: Task with socket 15 is 15
+2019-06-07 21:22:07,828 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:07,828 (Thread-4) tracker.pyc:440: Starter task with fd 15
+2019-06-07 21:22:07,828 (Thread-4) tracker.pyc:452: 15:<sprocket.controlling.tracker.task.TaskStarter object at 0x7f6f0759ad90> has init_msg {"lambda_function": "lambda_test", "lambda_start_ts": 1559942527.707666}
+2019-06-07 21:22:07,829 (Thread-4) machine_state.pyc:267: ['OK:HELLO', 'OK:SETI', 'OK:SETI', 'OK:SET', 'OK:R']
+2019-06-07 21:22:07 (Thread-4) root:44: in_events: {u'chunked_list': {'key': u'chunks', 'metadata': {'lineage': '1', 'pipe_id': '20190607212207-LavR'}}}
+2019-06-07 21:22:07,829 (Thread-4) tracker.pyc:220: Handling nonstarter task with fileno: 15
+2019-06-07 21:22:07,829 (Thread-4) machine_state.pyc:100: Received msg: OK:HELLO
+2019-06-07 21:22:07,829 (Thread-4) machine_state.pyc:114: <class 'sprocket.stages.python_cmd.InitState'>: <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#1))
+2019-06-07 21:22:07,929 (Thread-4) tracker.pyc:406: conn sock 15 got buffer writable
+2019-06-07 21:22:07,929 (Thread-4) socket_nb.pyc:231: Have 'deque(['000000000015 seti:nonblock:0'])' on send_queue
+2019-06-07 21:22:07,930 (Thread-4) socket_nb.pyc:234: Sending messages 000000000015 seti:nonblock:0
+2019-06-07 21:22:07,930 (Thread-4) tracker.pyc:409: send_queue: deque([])
+2019-06-07 21:22:07,930 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#1))
+2019-06-07 21:22:07,930 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,012 (Thread-3) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:08,012 (Thread-3) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:08 (Thread-3) root:11: 
+1 task(s) running
+('python_cmd:InitState', 1)
+
+2019-06-07 21:22:08,015 (Thread-5) resource_scheduler.pyc:35: Task requires: "[{u'max_allocation': 1, u'required_allocation': 1, u'name': u'device_0'}]"
+2019-06-07 21:22:08,015 (Thread-5) resource_scheduler.pyc:49: Insufficient resources for task task created. Need 1 of device_0 but have 0
+2019-06-07 21:22:08,015 (Thread-5) resource_scheduler.pyc:64: Placing 1 tasks back on delivery queue
+2019-06-07 21:22:08,015 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:08 (Thread-5) root:11: 
+0 task(s) running
+
+
+2019-06-07 21:22:08,030 (Thread-4) tracker.pyc:399: conn sock 15 got buffer readable
+2019-06-07 21:22:08,030 (Thread-4) socket_nb.pyc:119: Have 'deque([])' on recv_queue
+2019-06-07 21:22:08,030 (Thread-4) socket_nb.pyc:104: Unknown error [Errno 11] Resource temporarily unavailable
+2019-06-07 21:22:08,030 (Thread-4) machine_state.pyc:100: Received msg: OK:SETI(nonblock)
+2019-06-07 21:22:08,031 (Thread-4) machine_state.pyc:114: <class 'sprocket.stages.python_cmd.InitState'>: <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#2))
+2019-06-07 21:22:08,031 (Thread-4) tracker.pyc:402: recv_queue: deque([])
+2019-06-07 21:22:08,031 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#2))
+2019-06-07 21:22:08,031 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,131 (Thread-4) tracker.pyc:406: conn sock 15 got buffer writable
+2019-06-07 21:22:08,131 (Thread-4) socket_nb.pyc:231: Have 'deque(['000000000020 seti:threadpool_s3:4'])' on send_queue
+2019-06-07 21:22:08,131 (Thread-4) socket_nb.pyc:234: Sending messages 000000000020 seti:threadpool_s3:4
+2019-06-07 21:22:08,131 (Thread-4) tracker.pyc:409: send_queue: deque([])
+2019-06-07 21:22:08,132 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#2))
+2019-06-07 21:22:08,132 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,232 (Thread-4) tracker.pyc:399: conn sock 15 got buffer readable
+2019-06-07 21:22:08,232 (Thread-4) socket_nb.pyc:119: Have 'deque([])' on recv_queue
+2019-06-07 21:22:08,232 (Thread-4) socket_nb.pyc:104: Unknown error [Errno 11] Resource temporarily unavailable
+2019-06-07 21:22:08,232 (Thread-4) machine_state.pyc:100: Received msg: OK:SETI(threadpool_s3)
+2019-06-07 21:22:08,232 (Thread-4) machine_state.pyc:114: <class 'sprocket.stages.python_cmd.InitState'>: <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#3))
+2019-06-07 21:22:08,232 (Thread-4) tracker.pyc:402: recv_queue: deque([])
+2019-06-07 21:22:08,232 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#3))
+2019-06-07 21:22:08,232 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,333 (Thread-4) tracker.pyc:406: conn sock 15 got buffer writable
+2019-06-07 21:22:08,333 (Thread-4) socket_nb.pyc:231: Have 'deque([u'000000000031 set:straggler_configs:0.9 2 0.7'])' on send_queue
+2019-06-07 21:22:08,333 (Thread-4) socket_nb.pyc:234: Sending messages 000000000031 set:straggler_configs:0.9 2 0.7
+2019-06-07 21:22:08,333 (Thread-4) tracker.pyc:409: send_queue: deque([])
+2019-06-07 21:22:08,333 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#3))
+2019-06-07 21:22:08,333 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,434 (Thread-4) tracker.pyc:399: conn sock 15 got buffer readable
+2019-06-07 21:22:08,434 (Thread-4) socket_nb.pyc:119: Have 'deque([])' on recv_queue
+2019-06-07 21:22:08,434 (Thread-4) socket_nb.pyc:104: Unknown error [Errno 11] Resource temporarily unavailable
+2019-06-07 21:22:08,434 (Thread-4) machine_state.pyc:100: Received msg: OK:SET(straggler_configs)
+2019-06-07 21:22:08,434 (Thread-4) machine_state.pyc:114: <class 'sprocket.stages.python_cmd.InitState'>: <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#4))
+2019-06-07 21:22:08,434 (Thread-4) tracker.pyc:402: recv_queue: deque([])
+2019-06-07 21:22:08,434 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#4))
+2019-06-07 21:22:08,434 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,535 (Thread-4) tracker.pyc:406: conn sock 15 got buffer writable
+2019-06-07 21:22:08,535 (Thread-4) socket_nb.pyc:231: Have 'deque(['000000000023 run:mkdir -p ##TMPDIR##'])' on send_queue
+2019-06-07 21:22:08,535 (Thread-4) socket_nb.pyc:234: Sending messages 000000000023 run:mkdir -p ##TMPDIR##
+2019-06-07 21:22:08,535 (Thread-4) tracker.pyc:409: send_queue: deque([])
+2019-06-07 21:22:08,535 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.InitState'>: ((init state) (#4))
+2019-06-07 21:22:08,535 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,636 (Thread-4) tracker.pyc:399: conn sock 15 got buffer readable
+2019-06-07 21:22:08,636 (Thread-4) socket_nb.pyc:119: Have 'deque([])' on recv_queue
+2019-06-07 21:22:08,636 (Thread-4) socket_nb.pyc:104: Unknown error [Errno 11] Resource temporarily unavailable
+2019-06-07 21:22:08,636 (Thread-4) machine_state.pyc:100: Received msg: OK:RETVAL(0):OUTPUT():COMMAND(mkdir -p /tmp/lambda_uj_CFY)
+2019-06-07 21:22:08,636 (Thread-4) machine_state.pyc:267: [None]
+2019-06-07 21:22:08 (Thread-4) root:75: RunState: ["python_run:UpdateAlarmTable:lambda_handler:{u'event_id': 0, u'test_id': u'1559942503', u'cpu_load': 43, u'device_name': u'device_0'}"]
+2019-06-07 21:22:08,636 (Thread-4) machine_state.pyc:114: <class 'sprocket.stages.python_cmd.RunState'>: <class 'sprocket.stages.python_cmd.RunState'>: ((run state) (#0))
+2019-06-07 21:22:08,636 (Thread-4) machine_state.pyc:100: Received msg: LnxlP2YQi8plXMVD8OqpohGUHcRrep7j
+2019-06-07 21:22:08,637 (Thread-4) machine_state.pyc:267: ['OK:', 'OK:']
+2019-06-07 21:22:08,637 (Thread-4) machine_state.pyc:114: <class 'sprocket.stages.python_cmd.WaitForNextCommand'>: <class 'sprocket.stages.python_cmd.WaitForNextCommand'>: ((wait for input state) (#0))
+2019-06-07 21:22:08,637 (Thread-4) tracker.pyc:402: recv_queue: deque([])
+2019-06-07 21:22:08,637 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.WaitForNextCommand'>: ((wait for input state) (#0))
+2019-06-07 21:22:08,637 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:08,737 (Thread-4) tracker.pyc:406: conn sock 15 got buffer writable
+2019-06-07 21:22:08,738 (Thread-4) socket_nb.pyc:231: Have 'deque(["000000000132 python_run:UpdateAlarmTable:lambda_handler:{u'event_id': 0, u'test_id': u'1559942503', u'cpu_load': 43, u'device_name': u'device_0'}"])' on send_queue
+2019-06-07 21:22:08,738 (Thread-4) socket_nb.pyc:234: Sending messages 000000000132 python_run:UpdateAlarmTable:lambda_handler:{u'event_id': 0, u'test_id': u'1559942503', u'cpu_load': 43, u'device_name': u'device_0'}
+2019-06-07 21:22:08,738 (Thread-4) tracker.pyc:409: send_queue: deque([])
+2019-06-07 21:22:08,738 (Thread-4) tracker.pyc:198: Task with socket 15 is <class 'sprocket.stages.python_cmd.WaitForNextCommand'>: ((wait for input state) (#0))
+2019-06-07 21:22:08,738 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:09,013 (Thread-3) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:09,013 (Thread-3) SchedulerBase:54: Have 1 finished tasks
+2019-06-07 21:22:09,013 (Thread-3) resource_scheduler.pyc:71: Releasing resources
+2019-06-07 21:22:09,013 (Thread-3) SchedulerBase:76: finish scheduling pipeline
+2019-06-07 21:22:09 (Thread-3) root:75: pipeline: 20190607212207-LavR finished
+2019-06-07 21:22:09 (Thread-3) root:84: length of output queue: 0
+2019-06-07 21:22:09 (Thread-3) root:94: number of m4s chunks: 0
+2019-06-07 21:22:09 (Thread-3) root:95: total duration: 0.000000
+2019-06-07 21:22:09,016 (Thread-5) resource_scheduler.pyc:35: Task requires: "[{u'max_allocation': 1, u'required_allocation': 1, u'name': u'device_0'}]"
+2019-06-07 21:22:09,016 (Thread-5) resource_scheduler.pyc:55: Have sufficient resources for task task created
+2019-06-07 21:22:09,016 (Thread-5) resource_scheduler.pyc:61: submitted a task: task created
+2019-06-07 21:22:09,016 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:09,016 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:09 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:09,017 (Thread-6) tracker.pyc:286: Found waiting lambda with socket 15
+2019-06-07 21:22:09,017 (Thread-6) tracker.pyc:291: Updated Task array: [<sprocket.controlling.tracker.task.TaskStarter object at 0x7f6f07577590>]
+2019-06-07 21:22:09,017 (Thread-6) socket_nb.pyc:231: Have 'deque(['000000002773 run_new_task:{"addr": "ec2-52-53-155-252.us-west-1.compute.amazonaws.com", "nonblock": 0, "srvkey": "MIIEowIBAAKCAQEAvI3zftexur0U+iFAdUYXeMQl7gWNg51jsHAlKsm3AERipXinBxJ2x+TRGAKN6G6oKxGJJEZGObAHRog84dh5bibCN3/m+GHyRIykIx0CzQcD+iMTiRzzeSdu9nukOudjFKsSGpUQu3g2aME1s4mUybv5ijFGzgBIQ365KChvJ6ktr8uD7IrDGCT1YSgX5CKFvIxdB//pA2CkSji2mRA8MEf9Q+JPt6FlEVSPjzOY4Xrp+K1xHhhJeMjcFxkOnU+zxLoniKHPKpeQt3JwuwGQcWw1rFWv2p9BD+JYWtuApbUE3506Yc8gqa3FK5VQpHMd5+ZdO1ZwbBo8H6CU6fROsQIDAQABAoIBAHMkqF58L2+eyfGZXrh+7hR0i8kXoPyPn3H+eePwPI2wNSFhVXZvIxQcukdUP/6BnLZ4Rexd8cKGqVq8FZnBTR4kExQ7SfvCLGUKEa3TqIM11oro4qQnhtMkbpGcnYTPCmVztmF/SDGDTo6X9khGKxMqdE+cmeVwrLBy8XUBhCeODUfiTRdLhlTRDzAJfOJQIFs7IVqHdmt0tLKknLRfMljb58+A7XV5JQZhsPislfrqzpemK823pKnPNxSKE+y+IHfjcX3pidOQZdoC8o0zYFqzxrK3dZuPAdX2mc2FAojHCyuWpIqLF77R2auR8qPaiI7Rr/pIaYZlEIMEIS+RZbECgYEA9wFe3cSa110jb0e5lWjyNq6wDs7bVWCruXpC1tXny4akxB8p2nk2McQjFked15Q7GcjpEvv8F8KE4zqBPKGqob9M3ULNuZcphlxYtcGYP6lU3V6ayBjMcE9okj3FiwTR/tOOBx4beFlWI/o84nMjQXsJ4IViC/MtpVSKziCLWAUCgYEAw2uw4DOjnHyZCoJbnVD/E3Ksx/qkeLModxal0wOQ/rgKjN9z9oYW2eEn4gdYqbhzsxQ2Oz8l5Ty659Q5qKE9oQL6QcNRTNriosJ3Eq171I1K3GXEhhYw9w/Au7spKW+setOY8DUP7VwYdArlzSBfXsla6wcF8I9fY+HFFOKid70CgYEAqYX8SPItX0/iCPbODRgo3JTJ6m/YIuGlGjgp9W57lrjDDoNg4zu7kS5O8nSWhSWL5md4Z3ogC2KKd7Voi2ddR4OWymiV7yEq87cffybuSgr6XrAWROyYKyCk4XGZyY62XVFusb3dFp0hvLF65eQlt0QthDWnFBKDKmw6k7vMRs0CgYAFn63BZfsJX9SPpty4FEKi7qPmRWJCTvWVJ8Ox5OJhUi6Li0qtB4LU1lPtf0Sf7bz2pFhDMDgI9sxyK3tVTP6XCZzmE5bdXVc0U+BVW0S7Ay3qVctoCG90TLHBNUuj86DFEB3Qm9ZPgFz7yex/ELVt5uGE7fjPyXB3UWH4jeUbCQKBgAvK2tl1kUYUYoK5BL2UYWvCdwSKgL152SsHEGQ10UuWezxMWJrEyrdsguO8z3Is3y5PNZDf4QdUM77Z3wkMcVHr1SEavkWx689gum3IE+bxry4wvEUuQlkbBpMV9dY/uR0avlBQ1siIhld7A9nTQ+4JQf8wo7/J1W7MaF3Hv8k3", "srvcrt": "MIIC7jCCAdYCCQC1ZvC95TvqPTANBgkqhkiG9w0BAQsFADA3MQswCQYDVQQGEwJVUzELMAkGA1UECAwCQ0ExCzAJBgNVBAoMAm11MQ4wDAYDVQQDDAVtdV9jYTAeFw0xOTAyMjUxNzExMjJaFw0yOTAyMjIxNzExMjJaMDsxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJOWTELMAkGA1UECgwCbXUxEjAQBgNVBAMMCW11X3NlcnZlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALyN837Xsbq9FPohQHVGF3jEJe4FjYOdY7BwJSrJtwBEYqV4pwcSdsfk0RgCjehuqCsRiSRGRjmwB0aIPOHYeW4mwjd/5vhh8kSMpCMdAs0HA/ojE4kc83knbvZ7pDrnYxSrEhqVELt4NmjBNbOJlMm7+YoxRs4ASEN+uSgobyepLa/Lg+yKwxgk9WEoF+QihbyMXQf/6QNgpEo4tpkQPDBH/UPiT7ehZRFUj48zmOF66fitcR4YSXjI3BcZDp1Ps8S6J4ihzyqXkLdycLsBkHFsNaxVr9qfQQ/iWFrbgKW1BN+dOmHPIKmtxSuVUKRzHefmXTtWcGwaPB+glOn0TrECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAkqzOWQu1jrA86pP1ekKg4tn1pQiGwSR0yGk90maU3kHgHLHYMRd9uQt+NTth54T2ugEPt2ECh+PHnBJk+XjxVuGl0dXITcBE1CvgmrMpSRz/KW8OaLan/AekbM3sQhSSqJW0YMqJslX8CUJ75qihJTTucpG66ubBzrQOulByt8zZKjxgkI1zdGouYcTcXwWp40MfKZlAWdhE2BLFTQkXA7JsOdY1Kp+8ZYYZJKLL/RWjJ1015pU2obxTE0rSBgBxFjzO4dnsp5oc3+el2x1H6zYDrqeJKbP/7/gGQjMG4ls9LzrpEe3591gqVyGEQU+pHPTbqXDYi11gu1KGOORWuA==", "lambda_function": "lambda_test", "mode": 1, "port": 13580}'])' on send_queue
+2019-06-07 21:22:09,017 (Thread-6) socket_nb.pyc:234: Sending messages 000000002773 run_new_task:{"addr": "ec2-52-53-155-252.us-west-1.compute.amazonaws.com", "nonblock": 0, "srvkey": "MIIEowIBAAKCAQEAvI3zftexur0U+iFAdUYXeMQl7gWNg51jsHAlKsm3AERipXinBxJ2x+TRGAKN6G6oKxGJJEZGObAHRog84dh5bibCN3/m+GHyRIykIx0CzQcD+iMTiRzzeSdu9nukOudjFKsSGpUQu3g2aME1s4mUybv5ijFGzgBIQ365KChvJ6ktr8uD7IrDGCT1YSgX5CKFvIxdB//pA2CkSji2mRA8MEf9Q+JPt6FlEVSPjzOY4Xrp+K1xHhhJeMjcFxkOnU+zxLoniKHPKpeQt3JwuwGQcWw1rFWv2p9BD+JYWtuApbUE3506Yc8gqa3FK5VQpHMd5+ZdO1ZwbBo8H6CU6fROsQIDAQABAoIBAHMkqF58L2+eyfGZXrh+7hR0i8kXoPyPn3H+eePwPI2wNSFhVXZvIxQcukdUP/6BnLZ4Rexd8cKGqVq8FZnBTR4kExQ7SfvCLGUKEa3TqIM11oro4qQnhtMkbpGcnYTPCmVztmF/SDGDTo6X9khGKxMqdE+cmeVwrLBy8XUBhCeODUfiTRdLhlTRDzAJfOJQIFs7IVqHdmt0tLKknLRfMljb58+A7XV5JQZhsPislfrqzpemK823pKnPNxSKE+y+IHfjcX3pidOQZdoC8o0zYFqzxrK3dZuPAdX2mc2FAojHCyuWpIqLF77R2auR8qPaiI7Rr/pIaYZlEIMEIS+RZbECgYEA9wFe3cSa110jb0e5lWjyNq6wDs7bVWCruXpC1tXny4akxB8p2nk2McQjFked15Q7GcjpEvv8F8KE4zqBPKGqob9M3ULNuZcphlxYtcGYP6lU3V6ayBjMcE9okj3FiwTR/tOOBx4beFlWI/o84nMjQXsJ4IViC/MtpVSKziCLWAUCgYEAw2uw4DOjnHyZCoJbnVD/E3Ksx/qkeLModxal0wOQ/rgKjN9z9oYW2eEn4gdYqbhzsxQ2Oz8l5Ty659Q5qKE9oQL6QcNRTNriosJ3Eq171I1K3GXEhhYw9w/Au7spKW+setOY8DUP7VwYdArlzSBfXsla6wcF8I9fY+HFFOKid70CgYEAqYX8SPItX0/iCPbODRgo3JTJ6m/YIuGlGjgp9W57lrjDDoNg4zu7kS5O8nSWhSWL5md4Z3ogC2KKd7Voi2ddR4OWymiV7yEq87cffybuSgr6XrAWROyYKyCk4XGZyY62XVFusb3dFp0hvLF65eQlt0QthDWnFBKDKmw6k7vMRs0CgYAFn63BZfsJX9SPpty4FEKi7qPmRWJCTvWVJ8Ox5OJhUi6Li0qtB4LU1lPtf0Sf7bz2pFhDMDgI9sxyK3tVTP6XCZzmE5bdXVc0U+BVW0S7Ay3qVctoCG90TLHBNUuj86DFEB3Qm9ZPgFz7yex/ELVt5uGE7fjPyXB3UWH4jeUbCQKBgAvK2tl1kUYUYoK5BL2UYWvCdwSKgL152SsHEGQ10UuWezxMWJrEyrdsguO8z3Is3y5PNZDf4QdUM77Z3wkMcVHr1SEavkWx689gum3IE+bxry4wvEUuQlkbBpMV9dY/uR0avlBQ1siIhld7A9nTQ+4JQf8wo7/J1W7MaF3Hv8k3", "srvcrt": "MIIC7jCCAdYCCQC1ZvC95TvqPTANBgkqhkiG9w0BAQsFADA3MQswCQYDVQQGEwJVUzELMAkGA1UECAwCQ0ExCzAJBgNVBAoMAm11MQ4wDAYDVQQDDAVtdV9jYTAeFw0xOTAyMjUxNzExMjJaFw0yOTAyMjIxNzExMjJaMDsxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJOWTELMAkGA1UECgwCbXUxEjAQBgNVBAMMCW11X3NlcnZlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALyN837Xsbq9FPohQHVGF3jEJe4FjYOdY7BwJSrJtwBEYqV4pwcSdsfk0RgCjehuqCsRiSRGRjmwB0aIPOHYeW4mwjd/5vhh8kSMpCMdAs0HA/ojE4kc83knbvZ7pDrnYxSrEhqVELt4NmjBNbOJlMm7+YoxRs4ASEN+uSgobyepLa/Lg+yKwxgk9WEoF+QihbyMXQf/6QNgpEo4tpkQPDBH/UPiT7ehZRFUj48zmOF66fitcR4YSXjI3BcZDp1Ps8S6J4ihzyqXkLdycLsBkHFsNaxVr9qfQQ/iWFrbgKW1BN+dOmHPIKmtxSuVUKRzHefmXTtWcGwaPB+glOn0TrECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAkqzOWQu1jrA86pP1ekKg4tn1pQiGwSR0yGk90maU3kHgHLHYMRd9uQt+NTth54T2ugEPt2ECh+PHnBJk+XjxVuGl0dXITcBE1CvgmrMpSRz/KW8OaLan/AekbM3sQhSSqJW0YMqJslX8CUJ75qihJTTucpG66ubBzrQOulByt8zZKjxgkI1zdGouYcTcXwWp40MfKZlAWdhE2BLFTQkXA7JsOdY1Kp+8ZYYZJKLL/RWjJ1015pU2obxTE0rSBgBxFjzO4dnsp5oc3+el2x1H6zYDrqeJKbP/7/gGQjMG4ls9LzrpEe3591gqVyGEQU+pHPTbqXDYi11gu1KGOORWuA==", "lambda_function": "lambda_test", "mode": 1, "port": 13580}
+2019-06-07 21:22:09,017 (Thread-6) tracker.pyc:323: Invoking 1 worker(s) takes 0.795125961304 ms
+2019-06-07 21:22:09,018 (Thread-6) tracker.pyc:325: Tracker _invocation_loop sleep
+2019-06-07 21:22:09,299 (Thread-4) tracker.pyc:399: conn sock 15 got buffer readable
+2019-06-07 21:22:09,299 (Thread-4) socket_nb.pyc:119: Have 'deque([])' on recv_queue
+2019-06-07 21:22:09,299 (Thread-4) socket_nb.pyc:104: Unknown error [Errno 11] Resource temporarily unavailable
+2019-06-07 21:22:09,299 (Thread-4) tracker.pyc:402: recv_queue: deque(["OK:RETVAL(0):COMMAND(:UpdateAlarmTable:lambda_handler:{u'event_id': 0, u'test_id': u'1559942503', u'cpu_load': 43, u'device_name': u'device_0'})"])
+2019-06-07 21:22:09,299 (Thread-4) tracker.pyc:198: Task with socket 15 is 15
+2019-06-07 21:22:09,299 (Thread-4) tracker.pyc:438: Processing starter tasks
+2019-06-07 21:22:09,300 (Thread-4) tracker.pyc:440: Starter task with fd 15
+2019-06-07 21:22:09,300 (Thread-4) tracker.pyc:448: Throwing out message OK:RETVAL(0):COMMAND(:UpdateAlarmTable:lambda_handler:{u'event_id': 0, u'test_id': u'1559942503', u'cpu_load': 43, u'device_name': u'device_0'})
+Exception in thread Thread-4:
+Traceback (most recent call last):
+  File "/usr/lib64/python2.7/threading.py", line 804, in __bootstrap_inner
+    self.run()
+  File "/usr/lib64/python2.7/threading.py", line 757, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/home/ec2-user/pipeline/sprocket/controlling/tracker/tracker.py", line 487, in _profile_task_poll_loop
+    cls._task_poll_loop()
+  File "/home/ec2-user/pipeline/sprocket/controlling/tracker/tracker.py", line 209, in _task_poll_loop
+    should_append, removable = cls.process_starter_tasks(starter_tasks)
+  File "/home/ec2-user/pipeline/sprocket/controlling/tracker/tracker.py", line 445, in process_starter_tasks
+    init_msg = tsk.current_state.recv_queue.popleft()
+IndexError: pop from an empty deque
+
+2019-06-07 21:22:10,018 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:10,018 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:10 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:11,019 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:11,019 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:11 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:12,019 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:12,020 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:12 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:13,020 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:13,020 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:13 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:14,021 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:14,021 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:14 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:15,022 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:15,023 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:15 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:16,024 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:16,024 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:16 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:17,025 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:17,025 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:17 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:18,026 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:18,026 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:18 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:19,026 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:19,027 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:19 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:20,028 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:20,028 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:20 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:21,029 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:21,029 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:21 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:22,030 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:22,030 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:22 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:23,031 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:23,031 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:23 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:24,032 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:24,032 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:24 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:25,033 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:25,034 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:25 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:26,035 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:26,035 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:26 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:27,036 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:27,036 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:27 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:28,037 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:28,037 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:28 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:29,038 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:29,038 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:29 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:30,039 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:30,039 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:30 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:31,040 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:31,040 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:31 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:32,042 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:32,042 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:32 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:33,043 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:33,043 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:33 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:34,044 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:34,044 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:34 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:35,045 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:35,045 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:35 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:36,046 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:36,046 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:36 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:37,048 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:37,048 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:37 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:38,049 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:38,049 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:38 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:39,050 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:39,050 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:39 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:40,052 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:40,052 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:40 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:41,053 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:41,053 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:41 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:42,055 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:42,055 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:42 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:43,056 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:43,056 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:43 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:44,056 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:44,057 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:44 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:45,057 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:45,058 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:45 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:46,058 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:46,058 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:46 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:47,059 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:47,060 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:47 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:48,061 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:48,061 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:48 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:49,062 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:49,062 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:49 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:50,064 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:50,064 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:50 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:51,065 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:51,065 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:51 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:52,066 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:52,066 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:52 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:53,067 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:53,068 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:53 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:54,068 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:54,068 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:54 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:55,069 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:55,069 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:55 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:56,070 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:56,070 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:56 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:57,071 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:57,071 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:57 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:58,071 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:58,071 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:58 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:22:59,073 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:22:59,073 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:22:59 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:00,074 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:00,074 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:00 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:01,074 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:01,075 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:01 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:02,076 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:02,076 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:02 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:03,076 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:03,076 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:03 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:04,077 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:04,077 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:04 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:05,078 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:05,078 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:05 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:06,079 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:06,079 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:06 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:07,080 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:07,080 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:07 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:08,081 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:08,081 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:08 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:09,082 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:09,083 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:09 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:10,083 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:10,083 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:10 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:11,084 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:11,084 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:11 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:12,085 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:12,085 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:12 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:13,087 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:13,087 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:13 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:14,088 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:14,088 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:14 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:15,089 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:15,089 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:15 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:16,090 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:16,090 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:16 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:17,090 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:17,091 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:17 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:18,091 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:18,092 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:18 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:19,092 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:19,093 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:19 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:20,093 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:20,093 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:20 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:21,094 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:21,095 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:21 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:22,095 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:22,095 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:22 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:23,096 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:23,096 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:23 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:24,098 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:24,098 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:24 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:25,098 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:25,098 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:25 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:26,099 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:26,099 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:26 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:27,101 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:27,101 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:27 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:28,101 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:28,102 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:28 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:29,103 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:29,103 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:29 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:30,104 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:30,104 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:30 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:31,105 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:31,105 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:31 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:32,106 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:32,106 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:32 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:33,107 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:33,107 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:33 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:34,108 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:34,108 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:34 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:35,110 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:35,110 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:35 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:36,110 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:36,111 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:36 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:37,111 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:37,112 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:37 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:38,112 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:38,112 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:38 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:39,113 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:39,113 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:39 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:40,114 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:40,115 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:40 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:41,115 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:41,115 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:41 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:42,116 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:42,116 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:42 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:43,118 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:43,118 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:43 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+2019-06-07 21:23:44,119 (Thread-5) resource_scheduler.pyc:64: Placing 0 tasks back on delivery queue
+2019-06-07 21:23:44,119 (Thread-5) SchedulerBase:54: Have 0 finished tasks
+2019-06-07 21:23:44 (Thread-5) root:11: 
+1 task(s) running
+('task created', 1)
+
+Exception in thread Thread-6:
+Traceback (most recent call last):
+  File "/usr/lib64/python2.7/threading.py", line 804, in __bootstrap_inner
+    self.run()
+  File "/usr/lib64/python2.7/threading.py", line 757, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/home/ec2-user/pipeline/sprocket/controlling/tracker/tracker.py", line 240, in _invocation_loop
+    launcher_cls.initialize(launch_queue)
+  File "/home/ec2-user/pipeline/sprocket/platform/aws_lambda/launcher.py", line 21, in initialize
+    launch_ev = launch_queue.get()
+  File "/usr/lib64/python2.7/multiprocessing/queues.py", line 117, in get
+    res = self._recv()
+KeyboardInterrupt
+
+2019-06-07 21:23:44 (MainThread) root:48: Shutting down daemon
+2019-06-07 21:23:44,655 (Thread-6) tracker.pyc:327: Tracker _invocation_loop end
+2019-06-07 21:23:45,120 (Thread-5) SchedulerBase:76: finish scheduling pipeline
+2019-06-07 21:23:45 (Thread-5) root:75: pipeline: 20190607212207-ZCfg finished
+2019-06-07 21:23:45 (Thread-5) root:84: length of output queue: 0
+2019-06-07 21:23:45 (Thread-5) root:94: number of m4s chunks: 0
+2019-06-07 21:23:45 (Thread-5) root:95: total duration: 0.000000
+Run Statistics:
+{
+    "num_timesteps": 2, 
+    "num_devices": 1, 
+    "probability": 100.0, 
+    "seed": 10, 
+    "time_step (s)": 0.01, 
+    "test_id": "1559942503"
+}{
+    "device_0": 2
+}
+
