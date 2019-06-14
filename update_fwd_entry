@@ -1,0 +1,26 @@
+#!/bin/bash
+
+SPROCKET_DAEMON_PORT=24680
+SPROCKET_TRACKER_PORT=13580
+
+HOST_IP=$(last -1 -i | awk '{print $3}' | head -n 1)
+AWS_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+iptables -F
+iptables -t nat -F
+iptables -X
+
+
+# set up daemon port
+PORT=${SPROCKET_DAEMON_PORT}
+
+iptables -t nat -A PREROUTING -p tcp --dport ${PORT} -j DNAT --to-destination ${HOST_IP}:${PORT}
+iptables -t nat -A POSTROUTING -p tcp -d ${HOST_IP} --dport ${PORT} -j SNAT --to-source ${AWS_IP}
+
+# set up tracker port
+PORT=${SPROCKET_TRACKER_PORT}
+
+iptables -t nat -A PREROUTING -p tcp --dport ${PORT} -j DNAT --to-destination ${HOST_IP}:${PORT}
+iptables -t nat -A POSTROUTING -p tcp -d ${HOST_IP} --dport ${PORT} -j SNAT --to-source ${AWS_IP}
